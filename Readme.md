@@ -14,8 +14,11 @@ tktk
 
 ## Installation
 
+Honestly you should probably just copy [BetterNotification.swift]() into your project.
+
 The only way to install this package is with Swift Package Manager (SPM). Please [file a new issue][] or submit a pull-request if you want to use something else.
 
+[BetterNotification.swift]: https://github.com/samsonjs/BetterNotification/blob/main/Sources/BetterNotification/BetterNotification.swift
 [file a new issue]: https://github.com/samsonjs/BetterNotification/issues/new
 
 ### Supported Platforms

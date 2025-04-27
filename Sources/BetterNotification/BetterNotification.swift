@@ -24,6 +24,8 @@ public extension BetterNotification {
     static var userInfoKey: String { notificationName.rawValue }
 }
 
+// MARK: -
+
 public extension Notification {
     /// Creates a `Notification` instance for the given `BetterNotification` value.
     ///
@@ -41,7 +43,25 @@ public extension Notification {
             userInfo: [BN.userInfoKey: betterNotification]
         )
     }
+
+    /// Extracts a `BetterNotification` value of the specified type from this `Notification`'s `userInfo`.
+    ///
+    /// - Returns: The extracted `BetterNotification` value when found, otherwise `nil`.
+    func better<BN: BetterNotification>() -> BN? {
+        guard let object = userInfo?[BN.userInfoKey] else {
+            NSLog("[\(BN.self)] Object missing from userInfo[\"\(BN.userInfoKey)\"]")
+            return nil
+        }
+        guard let betterNotification = object as? BN else {
+            NSLog("[\(BN.self)] Failed to cast \(object) to \(BN.self)")
+            return nil
+        }
+
+        return betterNotification
+    }
 }
+
+// MARK: -
 
 public extension NotificationCenter {
     /// Returns an `AsyncSequence` of notifications of a specific `BetterNotification` type.
@@ -54,18 +74,18 @@ public extension NotificationCenter {
         for betterType: BN.Type
     ) -> any AsyncSequence<BN, Never> {
         notifications(named: BN.notificationName)
-            .compactMap { $0.userInfo?[BN.userInfoKey] as? BN }
+            .compactMap { $0.better() }
     }
 
-    /// Returns a Combine publisher that emits `BetterNotification` values of a specific type.
+    /// Returns a Combine publisher that emits `BetterNotification` values of the given type.
     ///
     /// - Parameter betterType: The `BetterNotification` type to observe.
     /// - Returns: A publisher emitting `BetterNotification` values.
-    func publisher<T: BetterNotification>(
-        for betterType: T.Type
-    ) -> AnyPublisher<T, Never> {
+    func publisher<BN: BetterNotification>(
+        for betterType: BN.Type
+    ) -> AnyPublisher<BN, Never> {
         publisher(for: betterType.notificationName)
-            .compactMap { $0.userInfo?[T.userInfoKey] as? T }
+            .compactMap { $0.better() }
             .eraseToAnyPublisher()
     }
 }
