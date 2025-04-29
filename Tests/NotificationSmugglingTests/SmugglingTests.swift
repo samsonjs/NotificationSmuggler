@@ -1,49 +1,42 @@
-@testable import BetterNotification
 import Combine
 import Foundation
+@testable import NotificationSmuggler
 import Testing
 
-struct BetterNotificationTests {
-    @Test func notificationName() {
-        #expect(HitchhikersNotification.notificationName.rawValue == "BetterNotification:HitchhikersNotification")
-    }
+struct SmugglingTests {
 
-    @Test func userInfoKey() {
-        #expect(HitchhikersNotification.userInfoKey == "BetterNotification:HitchhikersNotification")
-    }
-
-    // MARK: - Notification extensions
+    // MARK: Notification extensions
 
     @Test func buildNotification() {
-        let hitchhikers = HitchhikersNotification(answer: 42)
-        let notification = Notification.better(hitchhikers)
+        let contraband = HitchhikersNotification(answer: 42)
+        let notification = Notification.smuggle(contraband)
         #expect(notification.name == HitchhikersNotification.notificationName)
         #expect(notification.userInfo?.count == 1)
         let key = HitchhikersNotification.userInfoKey
         let userInfoValue = notification.userInfo?[key] as? HitchhikersNotification
-        #expect(userInfoValue == hitchhikers)
+        #expect(userInfoValue == contraband)
     }
 
-    @Test func extractBetterPayload() {
-        let hitchhikers = HitchhikersNotification(answer: 42)
-        let notification = Notification.better(hitchhikers)
-        let extracted: HitchhikersNotification? = notification.better()
-        #expect(extracted == hitchhikers)
+    @Test func extractContraband() {
+        let contraband = HitchhikersNotification(answer: 42)
+        let notification = Notification.smuggle(contraband)
+        let extracted: HitchhikersNotification? = notification.smuggled()
+        #expect(extracted == contraband)
     }
 
-    @Test func extractBetterPayloadFailsOnWrongType() {
+    @Test func extractContrabandFailsOnWrongType() {
         let imposter = Notification(
             name: HitchhikersNotification.notificationName,
             object: nil,
             userInfo: [HitchhikersNotification.userInfoKey: "imposter"]
         )
-        let extracted: HitchhikersNotification? = imposter.better()
+        let extracted: HitchhikersNotification? = imposter.smuggled()
         #expect(extracted == nil)
     }
 
-    @Test func extractBetterPayloadFailsOnMissingPayload() {
-        let wrongNotification = Notification(name: HitchhikersNotification.notificationName)
-        let extracted: HitchhikersNotification? = wrongNotification.better()
+    @Test func extractContrabandFailsOnMissingPayload() {
+        let incompleteNotification = Notification(name: HitchhikersNotification.notificationName)
+        let extracted: HitchhikersNotification? = incompleteNotification.smuggled()
         #expect(extracted == nil)
     }
 
@@ -58,16 +51,16 @@ struct BetterNotificationTests {
         let center = NotificationCenter()
         nonisolated(unsafe) var received = false
         Task {
-            for await hitchhikers in center.notifications(for: HitchhikersNotification.self) {
-                #expect(hitchhikers.answer == 42)
+            for await contraband in center.notifications(for: HitchhikersNotification.self) {
+                #expect(contraband.answer == 42)
                 received = true
                 break
             }
         }
         await Task.yield()
 
-        let hitchhikers = HitchhikersNotification(answer: 42)
-        center.post(.better(hitchhikers))
+        let contraband = HitchhikersNotification(answer: 42)
+        center.post(.smuggle(contraband))
         while !received { await Task.yield() }
     }
 
@@ -107,8 +100,8 @@ struct BetterNotificationTests {
             }.store(in: &cancellables)
         await Task.yield()
 
-        let hitchhikers = HitchhikersNotification(answer: 42)
-        center.post(.better(hitchhikers))
+        let contraband = HitchhikersNotification(answer: 42)
+        center.post(.smuggle(contraband))
         while !received { await Task.yield() }
     }
 
@@ -118,8 +111,8 @@ struct BetterNotificationTests {
         let center = NotificationCenter()
         nonisolated(unsafe) var received = false
         center.publisher(for: HitchhikersNotification.self)
-            .sink { hitchhikers in
-                #expect(hitchhikers.answer == 42)
+            .sink { contraband in
+                #expect(contraband.answer == 42)
                 received = true
             }.store(in: &cancellables)
         await Task.yield()
