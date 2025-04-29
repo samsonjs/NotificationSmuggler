@@ -6,8 +6,8 @@ import PackageDescription
 let package = Package(
     name: "NotificationSmuggler",
     platforms: [
-        .iOS(.v18),
-        .macOS(.v15),
+        .iOS(.v16),
+        .macOS(.v12),
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.

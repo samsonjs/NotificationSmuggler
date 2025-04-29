@@ -6,11 +6,44 @@
 
 ## Overview
 
-tkt
+NotificationSmuggler is a tiny Swift package that makes it easy to embed strongly-typed values in `Notification`s, and extract them out on the receiving end as well. Nothing elaborate, it sneaks the contraband in the `userInfo` dictionary.
+
+Declare a type conforming to `Smuggled` and then use the static method `Notification.smuggle(_:object:)` when posting the notification. On the receiving side of things you can use the extension methods `NotificationCenter.notifications(for:)` and `NotificationCenter.publisher(for:)` to observe the strongly-typed values without manually mapping them yourself.
+
+If you have `Sendable` contraband then all of this will work nicely with Swift 6 and complete concurrency checking.
 
 ## Usage
 
-tktk
+### Define a smuggled payload
+
+```swift
+struct SomeNotification: Smuggled, Sendable {
+    let answer: Int
+}
+```
+
+Your payload doesn't have to be Sendable but if it is then you have more flexibility.
+
+The `Smuggled` protocol provides static `notificationName` and `userInfoKey` properties for you, should you need them. Generally you don't though.
+
+### Post a notification
+
+```swift
+NotificationCenter.default.post(.smuggle(SomeNotification(answer: 42)))
+```
+
+This automatically sets the `.name`, `userInfo`, and optionally `.object` for the notification.
+
+### Observe and extract contraband
+
+```swift
+Task {
+    // This is fine because SomeNotification is Sendable
+    for await notification in NotificationCenter.default.notifications(for: SomeNotification.self) {
+        print(notification.answer)
+    }
+}
+```
 
 ## Installation
 
