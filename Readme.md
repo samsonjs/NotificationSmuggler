@@ -12,6 +12,8 @@ Declare a type conforming to `Smuggled` and then use the static method `Notifica
 
 If you have `Sendable` contraband then all of this will work nicely with Swift 6 and complete concurrency checking.
 
+This package pairs nicely with [AsyncMonitor](https://github.com/samsonjs/AsyncMonitor) for a complete notification handling system in the Swift 6 concurrency world.
+
 ## Usage
 
 ### Define a smuggled payload
