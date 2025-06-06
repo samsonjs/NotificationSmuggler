@@ -8,7 +8,7 @@ import Foundation
 /// If you want to extract the contraband manually you can use the extension method ``Notification.smuggled()``.
 ///
 /// When smuggling notifications you can use ``Notification.smuggle(:object:)`` to build up a notification with the correct
-/// user info automatically.
+/// user info automatically, or use ``NotificationCenter.smuggle(_:)`` as a convenience method that posts the notification directly.
 public protocol Smuggled {}
 
 public extension Smuggled {

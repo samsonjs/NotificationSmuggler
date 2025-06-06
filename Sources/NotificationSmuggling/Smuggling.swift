@@ -39,6 +39,13 @@ public extension Notification {
 // MARK: -
 
 public extension NotificationCenter {
+    /// Posts a notification that smuggles the given `Smuggled` value.
+    ///
+    /// - Parameter contraband: The `Smuggled` value to send.
+    func smuggle<Contraband: Smuggled>(_ contraband: Contraband) {
+        post(.smuggle(contraband))
+    }
+
     /// Returns an `AsyncSequence` of notifications of a specific `Smuggled` type.
     ///
     /// Each element of the sequence is a `Smuggled` value.
