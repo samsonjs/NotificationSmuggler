@@ -31,10 +31,16 @@ The `Smuggled` protocol provides static `notificationName` and `userInfoKey` pro
 ### Post a notification
 
 ```swift
+NotificationCenter.default.smuggle(SomeNotification(answer: 42))
+```
+
+or
+
+```swift
 NotificationCenter.default.post(.smuggle(SomeNotification(answer: 42)))
 ```
 
-This automatically sets the `.name`, `userInfo`, and optionally `.object` for the notification.
+Both automatically set the `.name`, `userInfo`, and optionally `.object` for the notification.
 
 ### Observe and extract contraband
 
@@ -66,7 +72,7 @@ When you're integrating this into an app with Xcode then go to your project's Pa
 When you're integrating this using SPM on its own then add this to the list of dependencies your Package.swift file:
 
 ```swift
-.package(url: "https://github.com/samsonjs/NotificationSmuggler.git", .upToNextMajor(from: "0.1.2"))
+.package(url: "https://github.com/samsonjs/NotificationSmuggler.git", .upToNextMajor(from: "0.2.0"))
 ```
 
 and then add `"NotificationSmuggler"` to the list of dependencies in your target as well.
