@@ -42,6 +42,22 @@ struct SmugglingTests {
 
     // MARK: NotificationCenter extensions
 
+    @Test(.timeLimit(.minutes(1)))
+    @MainActor func notificationCenterSmuggle() async {
+        let center = NotificationCenter()
+        let task = Task {
+            for await contraband in center.notifications(for: HitchhikersNotification.self) {
+                #expect(contraband.answer == 42)
+                return
+            }
+        }
+        await Task.yield()
+
+        let contraband = HitchhikersNotification(answer: 42)
+        center.smuggle(contraband)
+        await task.value
+    }
+
     // It's important that the tests and the notification-observing tasks are not on the same actor,
     // so we make the tests @MainActor and observe notifications on another actor. Otherwise it's
     // a deadlock.
@@ -60,7 +76,7 @@ struct SmugglingTests {
         await Task.yield()
 
         let contraband = HitchhikersNotification(answer: 42)
-        center.post(.smuggle(contraband))
+        center.smuggle(contraband)
         while !received { await Task.yield() }
     }
 
@@ -101,7 +117,7 @@ struct SmugglingTests {
         await Task.yield()
 
         let contraband = HitchhikersNotification(answer: 42)
-        center.post(.smuggle(contraband))
+        center.smuggle(contraband)
         while !received { await Task.yield() }
     }
 
