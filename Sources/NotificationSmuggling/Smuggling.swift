@@ -1,5 +1,8 @@
 import Combine
 import Foundation
+import os.log
+
+private let log = Logger(subsystem: "NotificationSmuggler", category: "smuggling")
 
 public extension Notification {
     /// Creates a `Notification` instance that smuggles the given `Smuggled` value.
@@ -24,11 +27,11 @@ public extension Notification {
     /// - Returns: The extracted `Smuggled` value when found, otherwise `nil`.
     func smuggled<Contraband: Smuggled>() -> Contraband? {
         guard let instance = userInfo?[Contraband.userInfoKey] else {
-            NSLog("[\(Contraband.self)] Value not found in userInfo[\"\(Contraband.userInfoKey)\"]")
+            log.error("Value not found in userInfo[\"\(Contraband.userInfoKey)\"] for \(Contraband.notificationName.rawValue)")
             return nil
         }
         guard let contraband = instance as? Contraband else {
-            NSLog("[\(Contraband.self)] Failed to cast \(instance) as \(Contraband.self)")
+            log.error("Failed to cast \(String(describing: instance)) as \(Contraband.notificationName.rawValue)")
             return nil
         }
 
