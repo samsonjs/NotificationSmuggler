@@ -144,4 +144,56 @@ struct SmugglingTests {
         try await Task.sleep(for: .milliseconds(10))
         #expect(!received)
     }
+
+    // MARK: Object-specific notifications
+
+    final class SenderObject: NSObject, Sendable {}
+
+    @Test(.timeLimit(.minutes(1)))
+    @MainActor func notificationCenterAsyncSequenceWithObject() async throws {
+        let center = NotificationCenter()
+        let senderObject = SenderObject()
+        let decoyObject = NSObject()
+        
+        let task = Task {
+            for await contraband in center.notifications(for: HitchhikersNotification.self, object: senderObject) {
+                #expect(contraband.answer == 42)
+                return
+            }
+        }
+        await Task.yield()
+
+        // Post from decay object, should be ignored
+        center.post(.smuggle(HitchhikersNotification(answer: 99), object: decoyObject))
+        try await Task.sleep(for: .milliseconds(10))
+
+        // Post from sender object, should be received
+        center.post(.smuggle(HitchhikersNotification(answer: 42), object: senderObject))
+        await task.value
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    @MainActor func notificationCenterPublisherWithObject() async throws {
+        var cancellables = Set<AnyCancellable>()
+        let center = NotificationCenter()
+        let senderObject = SenderObject()
+        let decoyObject = NSObject()
+        nonisolated(unsafe) var received = false
+        
+        center.publisher(for: HitchhikersNotification.self, object: senderObject)
+            .sink { contraband in
+                #expect(contraband.answer == 42)
+                received = true
+            }.store(in: &cancellables)
+        await Task.yield()
+
+        // Post from decoy object, should be ignored
+        center.post(.smuggle(HitchhikersNotification(answer: 99), object: decoyObject))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(!received)
+
+        // Post from sender object, should be received
+        center.post(.smuggle(HitchhikersNotification(answer: 42), object: senderObject))
+        while !received { await Task.yield() }
+    }
 }

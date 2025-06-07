@@ -8,7 +8,7 @@
 
 NotificationSmuggler is a tiny Swift package that makes it easy to embed strongly-typed values in `Notification`s, and extract them out on the receiving end as well. Nothing elaborate, it sneaks the contraband in the `userInfo` dictionary.
 
-Declare a type conforming to `Smuggled` and then use the static method `Notification.smuggle(_:object:)` when posting the notification. On the receiving side of things you can use the extension methods `NotificationCenter.notifications(for:)` and `NotificationCenter.publisher(for:)` to observe the strongly-typed values without manually mapping them yourself.
+Declare a type conforming to `Smuggled` and then use the static method `Notification.smuggle(_:object:)` when posting the notification. On the receiving side of things you can use the extension methods `NotificationCenter.notifications(for:object:)` and `NotificationCenter.publisher(for:object:)` to observe the strongly-typed values without manually mapping them yourself.
 
 If you have `Sendable` contraband then all of this will work nicely with Swift 6 and complete concurrency checking.
 
@@ -61,7 +61,7 @@ The only way to install this package is with Swift Package Manager (SPM). Please
 
 ### Supported Platforms
 
-This package is supported on iOS 16.0+ and macOS 12.0+.
+This package is supported on iOS 18.0+ and macOS 15.0+.
 
 ### Xcode
 
@@ -72,7 +72,7 @@ When you're integrating this into an app with Xcode then go to your project's Pa
 When you're integrating this using SPM on its own then add this to the list of dependencies your Package.swift file:
 
 ```swift
-.package(url: "https://github.com/samsonjs/NotificationSmuggler.git", .upToNextMajor(from: "0.2.0"))
+.package(url: "https://github.com/samsonjs/NotificationSmuggler.git", .upToNextMajor(from: "0.2.1"))
 ```
 
 and then add `"NotificationSmuggler"` to the list of dependencies in your target as well.

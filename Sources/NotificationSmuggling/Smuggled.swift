@@ -1,14 +1,51 @@
 import Foundation
 
-/// A marker protocol for types that represent notifications with associated data. Conforming types gain a default notification name and
-/// user info key to facilitate smuggling. They can be used with extension methods like
-/// ``NotificationCenter.notifications(for:)`` and ``NotificationCenter.publisher(for:)`` which
-/// automatically extract and cast this type from user info.
+/// A marker protocol for types that represent notifications with associated data.
 ///
-/// If you want to extract the contraband manually you can use the extension method ``Notification.smuggled()``.
+/// Conforming types automatically gain a default notification name and user-info key to facilitate
+/// type-safe notification handling. The protocol enables strongly-typed notification posting and
+/// observation without manual `userInfo` dictionary manipulation.
 ///
-/// When smuggling notifications you can use ``Notification.smuggle(:object:)`` to build up a notification with the correct
-/// user info automatically, or use ``NotificationCenter.smuggle(_:)`` as a convenience method that posts the notification directly.
+/// ## Basic Usage
+///
+/// Define a notification type:
+///
+/// ```swift
+/// struct AccountAuthenticatedNotification: Smuggled, Sendable {
+///     let accountID: String
+///     let timestamp: Date
+/// }
+/// ```
+///
+/// Post the notification:
+///
+/// ```swift
+/// NotificationCenter.default.smuggle(AccountAuthenticatedNotification(
+///     accountID: "abc123", 
+///     timestamp: .now
+/// ))
+/// ```
+///
+/// Observe notifications:
+///
+/// ```swift
+/// for await authentication in NotificationCenter.default.notifications(for: AccountAuthenticatedNotification.self) {
+///     print("Account \(authentication.accountID) authenticated")
+/// }
+/// ```
+///
+/// ## Sendable Considerations
+///
+/// For Swift 6 concurrency, consider making your notification types `Sendable` when they might 
+/// cross actor boundaries. Value types with `Sendable` properties are automatically `Sendable`.
+///
+/// ## Available Methods
+///
+/// - ``NotificationCenter.smuggle(_:object:)`` - Post notification directly
+/// - ``Notification.smuggle(_:object:)`` - Create notification instance
+/// - ``NotificationCenter.notifications(for:object:)`` - Async observation
+/// - ``NotificationCenter.publisher(for:object:)`` - Combine observation
+/// - ``Notification.smuggled()`` - Manual extraction
 public protocol Smuggled {}
 
 public extension Smuggled {
