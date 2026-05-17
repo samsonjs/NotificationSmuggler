@@ -4,7 +4,17 @@
 
 - Your change here.
 
-[Unreleased]: https://github.com/samsonjs/NotificationSmuggler/compare/0.2.1...HEAD
+[Unreleased]: https://github.com/samsonjs/NotificationSmuggler/compare/0.3.0...HEAD
+
+## [0.3.0] - 2026-05-17
+
+[Compare with 0.2.1](https://github.com/samsonjs/NotificationSmuggler/compare/0.2.1...0.3.0)
+
+### Changed
+- `Smuggled` now requires `SendableMetatype` to fix a Swift 6 warning in `notifications(for:)`. Your contraband still doesn't need to be `Sendable`.
+
+### Added
+- `Releasing.md` with release instructions.
 
 ## [0.2.1] - 2025-06-06
 
