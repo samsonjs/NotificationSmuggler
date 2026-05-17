@@ -46,7 +46,7 @@ import Foundation
 /// - ``NotificationCenter.notifications(for:object:)`` - Async observation
 /// - ``NotificationCenter.publisher(for:object:)`` - Combine observation
 /// - ``Notification.smuggled()`` - Manual extraction
-public protocol Smuggled {}
+public protocol Smuggled: SendableMetatype {}
 
 public extension Smuggled {
     /// The notification name associated with the conforming type.
