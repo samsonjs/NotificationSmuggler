@@ -1,0 +1,97 @@
+# SwiftPM CI on thetis (macOS host mode), on the Xcode pinned in .xcode-version
+# and on the other Xcode 27 releases thetis has. The package targets macOS as
+# well as iOS, so `swift test` runs straight on the host with no simulator.
+#
+# Forgejo is the primary repo and pushes to GitHub, which ignores .forgejo/.
+#
+# Checkout and the toolchain steps are composite actions from sjs/actions,
+# referenced by full URL so the runner fetches them from git.samhuri.net.
+#
+# Path filters and cancel-in-progress are here because there is exactly one Mac
+# runner: doc changes shouldn't occupy it, and neither should a run that a
+# newer push has already superseded. The workflow itself is linted with
+# actionlint and ShellCheck in a Linux container, off the Mac runner.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Sources/**"
+      - "Tests/**"
+      - "Package.swift"
+      - "Package.resolved"
+      - ".swift-version"
+      - ".xcode-version"
+      - ".forgejo/**"
+  # No branch filter on pull requests: a stacked PR targets another PR's
+  # branch rather than main, and it needs the tests just as much.
+  pull_request:
+    paths:
+      - "Sources/**"
+      - "Tests/**"
+      - "Package.swift"
+      - "Package.resolved"
+      - ".swift-version"
+      - ".xcode-version"
+      - ".forgejo/**"
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  workflows:
+    name: Lint workflows
+    runs-on: docker
+    container:
+      image: docker.io/library/ruby:4.0
+    timeout-minutes: 5
+    steps:
+      - name: Check out
+        uses: https://git.samhuri.net/sjs/actions/checkout@v1
+
+      - name: actionlint
+        uses: https://git.samhuri.net/sjs/actions/actionlint@v1
+
+  test:
+    name: Tests (${{ matrix.xcode-name }})
+    runs-on: macos-arm64
+    timeout-minutes: 20
+    strategy:
+      # The pinned entry is the one that has to be green, and an empty
+      # xcode-version is what makes the xcode action read .xcode-version and
+      # check-toolchain check .swift-version with it.
+      fail-fast: false
+      matrix:
+        include:
+          - xcode-name: pinned
+            xcode: ""
+          - xcode-name: "27.0"
+            xcode: "27.0"
+          - xcode-name: "27.1"
+            xcode: "27.1"
+    steps:
+      - name: Check out
+        uses: https://git.samhuri.net/sjs/actions/checkout@v1
+        with:
+          require-file: Package.swift
+
+      - name: Select Xcode
+        uses: https://git.samhuri.net/sjs/actions/xcode@v1
+        with:
+          xcode-version: ${{ matrix.xcode }}
+
+      - name: Show toolchain
+        uses: https://git.samhuri.net/sjs/actions/xcode-toolchain@v1
+        with:
+          tools: ""
+
+      - name: Check toolchain pins
+        uses: https://git.samhuri.net/sjs/actions/check-toolchain@v1
+        with:
+          xcode-version: ${{ matrix.xcode }}
+
+      - name: Run tests
+        run: swift test
