@@ -4,11 +4,11 @@
 
 - Your change here.
 
-[Unreleased]: https://github.com/samsonjs/NotificationSmuggler/compare/0.3.0...HEAD
+[Unreleased]: https://git.samhuri.net/sjs/NotificationSmuggler/compare/0.3.0...HEAD
 
 ## [0.3.0] - 2026-05-17
 
-[Compare with 0.2.1](https://github.com/samsonjs/NotificationSmuggler/compare/0.2.1...0.3.0)
+[Compare with 0.2.1](https://git.samhuri.net/sjs/NotificationSmuggler/compare/0.2.1...0.3.0)
 
 ### Changed
 - `Smuggled` now requires `SendableMetatype` to fix a Swift 6 warning in `notifications(for:)`. Your contraband still doesn't need to be `Sendable`.
@@ -18,7 +18,7 @@
 
 ## [0.2.1] - 2025-06-06
 
-[Compare with 0.2.0](https://github.com/samsonjs/NotificationSmuggler/compare/0.2.0...0.2.1)
+[Compare with 0.2.0](https://git.samhuri.net/sjs/NotificationSmuggler/compare/0.2.0...0.2.1)
 
 ### Added
 - Support for optional object parameter in notification posting
@@ -31,7 +31,7 @@
 
 ## [0.2.0] - 2025-06-06
 
-[Compare with 0.1.2](https://github.com/samsonjs/NotificationSmuggler/compare/0.1.2...0.2.0)
+[Compare with 0.1.2](https://git.samhuri.net/sjs/NotificationSmuggler/compare/0.1.2...0.2.0)
 
 ### Added
 - [#1](https://github.com/samsonjs/NotificationSmuggler/pull/1): `NotificationCenter.smuggle` extension method for improved ergonomics - [@samsonjs](https://github.com/samsonjs).
@@ -43,14 +43,14 @@
 
 ## [0.1.2] - 2025-04-29
 
-[Compare with 0.1.1](https://github.com/samsonjs/NotificationSmuggler/compare/0.1.1...0.1.2)
+[Compare with 0.1.1](https://git.samhuri.net/sjs/NotificationSmuggler/compare/0.1.1...0.1.2)
 
 ### Changed
 - Updated documentation and version references
 
 ## [0.1.1] - 2025-04-29
 
-[Compare with 0.1.0](https://github.com/samsonjs/NotificationSmuggler/compare/0.1.0...0.1.1)
+[Compare with 0.1.0](https://git.samhuri.net/sjs/NotificationSmuggler/compare/0.1.0...0.1.1)
 
 ### Changed
 - Fixed deployment targets for iOS 18.0+ and macOS 15.0+
