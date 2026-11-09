@@ -94,4 +94,6 @@ jobs:
           xcode-version: ${{ matrix.xcode }}
 
       - name: Run tests
-        run: swift test
+        uses: https://git.samhuri.net/sjs/actions/swift-test@v1
+        with:
+          fail-on-warnings: "true"

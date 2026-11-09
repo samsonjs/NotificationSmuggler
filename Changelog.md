@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-- Your change here.
+- CI fails on Swift compiler warnings.
 
 [Unreleased]: https://git.samhuri.net/sjs/NotificationSmuggler/compare/0.3.0...HEAD
 
